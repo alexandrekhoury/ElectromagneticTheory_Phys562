@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 
-def FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,Hzy,sigmad,depth,ep_o,Npix):
+def FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,Hzy,sigmad,depth,ep_o,Npix,length):
     # 3.93 a)
     # bad values are [:,-1,-1]
     H_temp[:,:,:,0,t_index] = H[:,:,:,0] + Rb*(np.roll(E[:,:,:,1],-1,axis=2) - E[:,:,:,1] - np.roll(E[:,:,:,2],-1,axis=1) + E[:,:,:,2])
@@ -49,13 +49,15 @@ def FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,
     #            
     #   
     """  
-    E_temp[:,:,:,0,t_index]=np.exp(-sigmad[:,:,1]*dt/ep_o)*E[:,:,:,0]+(1-np.exp(-sigmad[:,:,1]*dt/ep_o))/(depth*sigmad[:,:,1])*(np.roll(Hzx+Hzy,-1,axis=1)-np.roll(Hzx-Hzy,1,axis=1))
-    E_temp[:,:,:,1,t_index]=np.exp(-sigmad[:,:,0]*dt/ep_o)*E[:,:,:,1]+(1-np.exp(-sigmad[:,:,0]*dt/ep_o))/(depth*sigmad[:,:,0])*(np.roll(Hzx+Hzy,1,axis=0)-np.roll(Hzx+Hzy,-1,axis=0))
-    Hzx_temp[:,:,:,t_index]=np.exp(-sigmad[:,:,0]*dt/ep_o)*Hzx[:,:,:]+(1-np.exp(-sigmad[:,:,0]*dt/ep_o))/(depth*sigmad[:,:,0])*(np.roll(E[:,:,:,1],1,axis=0)-np.roll(E[:,:,:,1],-1,axis=0))
-    Hzy_temp[:,:,:,t_index]=np.exp(-sigmad[:,:,1]*dt/ep_o)*Hzy[:,:,:]+(1-np.exp(-sigmad[:,:,1]*dt/ep_o))/(depth*sigmad[:,:,1])*(np.roll(E[:,:,:,0],-1,axis=1)-np.roll(E[:,:,:,0],1,axis=1))
-    
+    q1=np.array([np.arange(0,length),np.arange(Npix-length,Npix)]).ravel()
+    for q in q1:
+        E_temp[:,:,q,0,t_index]=np.exp(-sigmad[:,:,1]*dt/ep_o)*E[:,:,q,0]+(1-np.exp(-sigmad[:,:,1]*dt/ep_o))/(depth*sigmad[:,:,1])*(np.roll((Hzx+Hzy)[:,:,q],-1,axis=1)-np.roll((Hzx-Hzy)[:,:,q],1,axis=1))
+        E_temp[:,:,:,1,t_index]=np.exp(-sigmad[:,:,0]*dt/ep_o)*E[:,:,q,1]+(1-np.exp(-sigmad[:,:,0]*dt/ep_o))/(depth*sigmad[:,:,0])*(np.roll((Hzx+Hzy)[:,:,q],1,axis=0)-np.roll((Hzx+Hzy)[:,:,q],-1,axis=0))
+        Hzx_temp[:,:,q,t_index]=np.exp(-sigmad[:,:,0]*dt/ep_o)*Hzx[:,:,q]+(1-np.exp(-sigmad[:,:,0]*dt/ep_o))/(depth*sigmad[:,:,0])*(np.roll(E[:,:,q,1],1,axis=0)-np.roll(E[:,:,q,1],-1,axis=0))
+        Hzy_temp[:,:,q,t_index]=np.exp(-sigmad[:,:,1]*dt/ep_o)*Hzy[:,:,q]+(1-np.exp(-sigmad[:,:,1]*dt/ep_o))/(depth*sigmad[:,:,1])*(np.roll(E[:,:,q,0],-1,axis=1)-np.roll(E[:,:,q,0],1,axis=1))
    
-    H_temp[:,:,:,2,:]=Hzy_temp+Hzx_temp
+   
+    H_temp[:,:,q,2,:]=(Hzy_temp+Hzx_temp)[:,:,q,:]
 
 
     index1 = np.array([0,-1])
@@ -174,7 +176,7 @@ depth=10
 
 # boundary end
 t_index = 1
-E_temp, H_temp = FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,Hzy,sigmad,depth,ep_o,Npix)
+E_temp, H_temp = FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,Hzy,sigmad,depth,ep_o,Npix,length)
 
 t_index = 2
 
@@ -185,7 +187,7 @@ slices = np.zeros((Npix,Npix,Nmax//100))
 for n in range(Nmax):
     print(n)
  
-    E_temp, H_temp = FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,Hzy,sigmad,depth,ep_o,Npix)
+    E_temp, H_temp = FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,Hzy,sigmad,depth,ep_o,Npix,length)
 
 
     # Set the n time step equal to the n-1 time step
