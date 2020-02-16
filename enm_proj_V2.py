@@ -48,36 +48,44 @@ def FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,
     #            Hzx_temp[:,:,:,t_index]=np.exp(-sigmad[:,j,1]*dt/ep_o)*E[:,:,:,0]+(1-np.exp(-sigmad[:,j,1]*dt/ep_o))/(depth*sigmad[:,j,1])*(E[i,j+1,:,0]-E[i,j-1,:,0])
     #            
     #   
-    """  
-    q1=np.array([np.arange(0,length),np.arange(Npix-length,Npix)]).ravel()
-    for q in q1:
-        E_temp[:,:,q,0,t_index]=np.exp(-sigmad[:,:,1]*dt/ep_o)*E[:,:,q,0]+(1-np.exp(-sigmad[:,:,1]*dt/ep_o))/(depth*sigmad[:,:,1])*(np.roll((Hzx+Hzy)[:,:,q],-1,axis=1)-np.roll((Hzx-Hzy)[:,:,q],1,axis=1))
-        E_temp[:,:,:,1,t_index]=np.exp(-sigmad[:,:,0]*dt/ep_o)*E[:,:,q,1]+(1-np.exp(-sigmad[:,:,0]*dt/ep_o))/(depth*sigmad[:,:,0])*(np.roll((Hzx+Hzy)[:,:,q],1,axis=0)-np.roll((Hzx+Hzy)[:,:,q],-1,axis=0))
-        Hzx_temp[:,:,q,t_index]=np.exp(-sigmad[:,:,0]*dt/ep_o)*Hzx[:,:,q]+(1-np.exp(-sigmad[:,:,0]*dt/ep_o))/(depth*sigmad[:,:,0])*(np.roll(E[:,:,q,1],1,axis=0)-np.roll(E[:,:,q,1],-1,axis=0))
-        Hzy_temp[:,:,q,t_index]=np.exp(-sigmad[:,:,1]*dt/ep_o)*Hzy[:,:,q]+(1-np.exp(-sigmad[:,:,1]*dt/ep_o))/(depth*sigmad[:,:,1])*(np.roll(E[:,:,q,0],-1,axis=1)-np.roll(E[:,:,q,0],1,axis=1))
+    """ 
+    
+    
+    q=np.array([np.arange(0,length),np.arange(Npix-length,Npix)]).ravel()
+    #q1=np.array([np.arange(Npix-length,Npix)]).ravel()
+    
+#    E_temp[q,:,Npix//2,0,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*E[q,:,Npix//2,0]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll((Hzx+Hzy)[q,:,Npix//2],-1,axis=1)-np.roll((Hzx-Hzy)[q,:,Npix//2],1,axis=1))
+#    E_temp[q,:,Npix//2,1,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*E[q,:,Npix//2,1]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll((Hzx+Hzy)[q,:,Npix//2],1,axis=0)-np.roll((Hzx+Hzy)[q,:,Npix//2],-1,axis=0))
+#    Hzx_temp[q,:,Npix//2,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*Hzx[q,:,Npix//2]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll(E[q,:,Npix//2,1],1,axis=0)-np.roll(E[q,:,Npix//2,1],-1,axis=0))
+#    Hzy_temp[q,:,Npix//2,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*Hzy[q,:,Npix//2]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll(E[q,:,Npix//2,0],-1,axis=1)-np.roll(E[q,:,Npix//2,0],1,axis=1))
    
+#    E_temp[:,q,:,0,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*E[:,q,:,0]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll((Hzx+Hzy)[:,q,:],-1,axis=1)-np.roll((Hzx-Hzy)[:,q,:],1,axis=1)) 
+#    E_temp[:,q,:,1,t_index]=np.exp(-sigmad[:,q,0]*dt/ep_o)*E[:,q,:,1]+(1-np.exp(-sigmad[:,q,0]*dt/ep_o))/(depth*sigmad[:,q,0])*(np.roll((Hzx+Hzy)[:,q,:],1,axis=0)-np.roll((Hzx+Hzy)[:,q,:],-1,axis=0))
+#    Hzx_temp[:,q,:,t_index]=np.exp(-sigmad[:,q,0]*dt/ep_o)*Hzx[:,q,:]+(1-np.exp(-sigmad[:,q,0]*dt/ep_o))/(depth*sigmad[:,q,0])*(np.roll(E[:,q,:,1],1,axis=0)-np.roll(E[:,q,:,1],-1,axis=0))
+#    Hzy_temp[:,q,:,t_index]=np.exp(-sigmad[:,q,0]*dt/ep_o)*Hzy[:,q,:]+(1-np.exp(-sigmad[:,q,0]*dt/ep_o))/(depth*sigmad[:,q,0])*(np.roll(E[:,q,:,0],-1,axis=1)-np.roll(E[:,q,:,0],1,axis=1))
+    
    
     H_temp[:,:,q,2,:]=(Hzy_temp+Hzx_temp)[:,:,q,:]
 
 
-    index1 = np.array([0,-1])
-    index2 = np.array([1,-2])
-    temp = H_temp[...,t_index]
-    temp[index1,:,:,:] = H[index2,:,:,:]
-    temp[:,index1,:,:] = H[:,index2,:,:]
-    temp[:,:,index1,:] = H[:,:,index2,:]
-    H_temp[...,t_index] = temp
-
-    temp = E_temp[...,t_index]
-    temp[index1,:,:,:] = E[index2,:,:,:]
-    temp[:,index1,:,:] = E[:,index2,:,:]
-    temp[:,:,index1,:] = E[:,:,index2,:]
-    E_temp[...,t_index] = temp
+#    index1 = np.array([0,-1])
+#    index2 = np.array([1,-2])
+#    temp = H_temp[...,t_index]
+#    temp[index1,:,:,:] = H[index2,:,:,:]
+#    temp[:,index1,:,:] = H[:,index2,:,:]
+#    temp[:,:,index1,:] = H[:,:,index2,:]
+#    H_temp[...,t_index] = temp
+#
+#    temp = E_temp[...,t_index]
+#    temp[index1,:,:,:] = E[index2,:,:,:]
+#    temp[:,index1,:,:] = E[:,index2,:,:]
+#    temp[:,:,index1,:] = E[:,:,index2,:]
+#    E_temp[...,t_index] = temp
 
     return E_temp, H_temp
 
-Npix = 30
-Nmax = 20000
+Npix = 35
+Nmax = 10000
 
 #conductivity
 sigma= [0,0]
@@ -151,7 +159,7 @@ E_temp = np.zeros((Npix,Npix,Npix,3,num_save_steps))
 H_temp = np.zeros((Npix,Npix,Npix,3,num_save_steps))
 
 # Store initial wave 
-E[:,4,:,2] += np.cos(2*np.pi*freq*(0*dt))
+E[8,:,:,1] += np.cos(2*np.pi*freq*(0*dt))
 E_temp[:,:,:,:,0] = E
 H_temp[:,:,:,:,0] = H
 
@@ -166,12 +174,12 @@ sigmad=np.zeros((Npix,Npix,2))
 length=5
 
 for i in range(0,Npix):
-    sigmad[0:length,i,1]=(np.arange(0,length)*-1+length-1)
-    sigmad[-length:,i,1]=(np.arange(0,length))
-    sigmad[i,0:length,0]=(np.arange(0,length)*-1+length-1)
-    sigmad[i,-length:,0]=(np.arange(0,length))
+    sigmad[0:length,i,1]=(np.arange(1,length+1)*-1+length+1)
+    sigmad[-length:,i,1]=(np.arange(1,length+1))
+    sigmad[i,0:length,0]=(np.arange(1,length+1)*-1+length+1)
+    sigmad[i,-length:,0]=(np.arange(1,length+1))
 
-
+sigmad*=1
 depth=10
 
 # boundary end
@@ -193,16 +201,22 @@ for n in range(Nmax):
     # Set the n time step equal to the n-1 time step
     E = E_temp[:,:,:,:,1]
     H = H_temp[:,:,:,:,1]
+    
+    Hzx=Hzx_temp[:,:,:,1]
+    Hzy=Hzy_temp[:,:,:,1]
 
     E_temp[:,:,:,:,1] = E_temp[:,:,:,:,2]
     H_temp[:,:,:,:,1] = H_temp[:,:,:,:,2]
+    
+    Hzy_temp[:,:,:,1]=Hzy_temp[:,:,:,2]
+    Hzx_temp[:,:,:,1]=Hzx_temp[:,:,:,2]
 
-    E[:,4,:,2] = np.cos(2*np.pi*freq*(n*dt))
+    E[8,:,:,1] = np.cos(2*np.pi*freq*(n*dt))
     
     
 
     if n % 100 == 0:
-        z = E[:,:,Npix//5,2]
+        z = E[:,:,Npix//2,1]
         slices[:,:,n//100] = z
 
 import matplotlib.animation as animation
@@ -231,4 +245,4 @@ x, y = np.meshgrid(x, y)
 plot = [ax.plot_surface(x, y, slices[:,:,0], color='0.75', rstride=1, cstride=1,linewidth=10)]
 ax.set_zlim(-3,3)
 ani = animation.FuncAnimation(fig, update_plot,fargs=(slices, plot), interval=60,save_count=1000)
-ani.save("movie.gif")
+ani.save("movie3.gif")
