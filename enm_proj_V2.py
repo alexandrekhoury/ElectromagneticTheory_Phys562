@@ -102,7 +102,7 @@ def FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,
     return E_temp, H_temp, Hzy_temp, Hzx_temp
 
 Npix = 35
-Nmax = 12000
+Nmax = 15000
 
 #conductivity
 sigma= [0,0]
@@ -196,8 +196,8 @@ for i in range(0,Npix):
     sigmad[i,0:length,0]=(np.arange(1,length+1)*-1+length+1)
     sigmad[i,-length:,0]=(np.arange(1,length+1))
 
-sigmad*=0.3
-depth=10
+sigmad*=0.1
+depth=7
 
 # boundary end
 t_index = 1
