@@ -53,12 +53,25 @@ def FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,
     
     q=np.array([np.arange(0,length),np.arange(Npix-length,Npix)]).ravel()
 #    #q1=np.array([np.arange(Npix-length,Npix)]).ravel()
-#    
+
+    
     E_temp[q,:,Npix//2,0,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*E[q,:,Npix//2,0]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll((Hzx+Hzy)[q,:,Npix//2],-1,axis=1)-np.roll((Hzx-Hzy)[q,:,Npix//2],1,axis=1))
     E_temp[q,:,Npix//2,1,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*E[q,:,Npix//2,1]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll((Hzx+Hzy)[q,:,Npix//2],1,axis=0)-np.roll((Hzx+Hzy)[q,:,Npix//2],-1,axis=0))
     Hzx_temp[q,:,Npix//2,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*Hzx[q,:,Npix//2]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll(E[q,:,Npix//2,1],1,axis=0)-np.roll(E[q,:,Npix//2,1],-1,axis=0))
     Hzy_temp[q,:,Npix//2,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*Hzy[q,:,Npix//2]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll(E[q,:,Npix//2,0],-1,axis=1)-np.roll(E[q,:,Npix//2,0],1,axis=1))
    
+    
+    
+    
+#    E_temp[q,:,0,0,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*E[q,:,0,0]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll((Hzx+Hzy)[q,:,0],-1,axis=1)-np.roll((Hzx-Hzy)[q,:,0],1,axis=1))
+#    E_temp[q,:,0,1,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*E[q,:,0,1]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll((Hzx+Hzy)[q,:,0],1,axis=0)-np.roll((Hzx+Hzy)[q,:,0],-1,axis=0))
+#    Hzx_temp[q,:,0,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*Hzx[q,:,0]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll(E[q,:,0,1],1,axis=0)-np.roll(E[q,:,0,1],-1,axis=0))
+#    Hzy_temp[q,:,0,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*Hzy[q,:,0]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll(E[q,:,0,0],-1,axis=1)-np.roll(E[q,:,0,0],1,axis=1))
+#   
+#    
+    print(Hzx_temp[q,:,Npix//2,t_index])
+#    plt.plot(E_temp[q,:,Npix//2,1,t_index])
+#    plt.pause(0.001)
 #    E_temp[:,q,:,0,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*E[:,q,:,0]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll((Hzx+Hzy)[:,q,:],-1,axis=1)-np.roll((Hzx-Hzy)[:,q,:],1,axis=1)) 
 #    E_temp[:,q,:,1,t_index]=np.exp(-sigmad[:,q,0]*dt/ep_o)*E[:,q,:,1]+(1-np.exp(-sigmad[:,q,0]*dt/ep_o))/(depth*sigmad[:,q,0])*(np.roll((Hzx+Hzy)[:,q,:],1,axis=0)-np.roll((Hzx+Hzy)[:,q,:],-1,axis=0))
 #    Hzx_temp[:,q,:,t_index]=np.exp(-sigmad[:,q,0]*dt/ep_o)*Hzx[:,q,:]+(1-np.exp(-sigmad[:,q,0]*dt/ep_o))/(depth*sigmad[:,q,0])*(np.roll(E[:,q,:,1],1,axis=0)-np.roll(E[:,q,:,1],-1,axis=0))
@@ -71,7 +84,7 @@ def FDTD_eq(E,H,E_temp,H_temp,t_index,Rb,Ra,Ca_arr,Cb_arr,Hzx_temp,Hzy_temp,Hzx,
 #    Hzy_temp[q,Npix//2,:,t_index]=np.exp(-sigmad[q,:,1]*dt/ep_o)*Hzy[q,Npix//2,:]+(1-np.exp(-sigmad[q,:,1]*dt/ep_o))/(depth*sigmad[q,:,1])*(np.roll(E[q,Npix//2,:,0],-1,axis=1)-np.roll(E[q,Npix//2,:,0],1,axis=1))
 #   
    
-    H_temp[q,:,Npix//2,2,:]=(Hzy_temp+Hzx_temp)[q,:,Npix//2,:]
+    #H_temp[q,:,Npix//2,2,:]=(Hzy_temp+Hzx_temp)[q,:,Npix//2,:]
 
 
 #    index1 = np.array([0,-1])
@@ -185,7 +198,7 @@ for i in range(0,Npix):
     sigmad[i,0:length,0]=(np.arange(1,length+1)*-1+length+1)
     sigmad[i,-length:,0]=(np.arange(1,length+1))
 
-sigmad*=1
+sigmad*=0.1
 depth=10
 
 # boundary end
